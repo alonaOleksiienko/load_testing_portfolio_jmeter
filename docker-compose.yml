@@ -1,0 +1,14 @@
+services:
+  app:
+    build: ./app
+    ports:
+      - "3000:3000"
+
+  jmeter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.jmeter
+    volumes:
+      - ./jmeter:/tests
+    depends_on:
+      - app

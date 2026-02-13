@@ -1,0 +1,25 @@
+FROM eclipse-temurin:17-jdk-jammy
+
+ARG JMETER_VERSION=5.6.3
+
+# Install required tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download and install JMeter
+RUN set -eux; \
+    url="https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.zip"; \
+    echo "Downloading: $url"; \
+    curl -fL --retry 5 --retry-delay 2 -o /tmp/jmeter.zip "$url"; \
+    unzip /tmp/jmeter.zip -d /tmp; \
+    mv "/tmp/apache-jmeter-${JMETER_VERSION}" /jmeter; \
+    rm -rf /tmp/jmeter.zip /tmp/apache-jmeter-${JMETER_VERSION}
+
+ENV JMETER_HOME=/jmeter
+ENV PATH="${JMETER_HOME}/bin:${PATH}"
+
+WORKDIR /workspace
